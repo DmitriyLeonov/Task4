@@ -11,5 +11,6 @@ public class ApplicationUser : IdentityUser
 {
     public DateTime RegistrationDateTime { get; set; }
     public DateTime LastLogInTime { get; set; }
+    public string Status { get; set; } = "User";
 }
 
