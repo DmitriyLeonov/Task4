@@ -118,14 +118,19 @@ namespace Task4.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
+                var findUserResult = _userManager.FindByNameAsync(Input.UserName);
+                if (findUserResult != null && findUserResult.Result.Status.Equals("Deleted"))
+                {
+                    DeleteUser(findUserResult.Result);
+                }
                 user.RegistrationDateTime = DateTime.Now;
                 user.LastLogInTime = DateTime.Now;
                 user.Status = "Active";
                 await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
+                var description = new IdentityErrorDescriber().DuplicateUserName(Input.UserName);
+                
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -176,6 +181,10 @@ namespace Task4.Areas.Identity.Pages.Account
             }
         }
 
+        private void DeleteUser(ApplicationUser user)
+        {
+            _userManager.DeleteAsync(user);
+        }
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
