@@ -119,9 +119,12 @@ namespace Task4.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
                 var findUserResult = _userManager.FindByNameAsync(Input.UserName);
-                if (findUserResult != null && findUserResult.Result.Status.Equals("Deleted"))
+                if (findUserResult.Result != null)
                 {
-                    DeleteUser(findUserResult.Result);
+                    if (findUserResult.Result.Status.Equals("Deleted"))
+                    {
+                        DeleteUser(findUserResult.Result);
+                    }
                 }
                 user.RegistrationDateTime = DateTime.Now;
                 user.LastLogInTime = DateTime.Now;
