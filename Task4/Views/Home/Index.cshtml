@@ -1,8 +1,53 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using Task4.Areas.Identity.Data
+@model IEnumerable<ApplicationUser>
+@{
     ViewData["Title"] = "Home Page";
 }
+@inject SignInManager<ApplicationUser> SignInManager
+@if (!SignInManager.IsSignedIn(User))
+{
+    Context.Response.Redirect("Identity/Account/Login");
+}
+else
+{
+    <h2>Users</h2>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <form method="post">
+        <div class="nl">
+            <div id="toolbar">
+                <button type="submit" formaction="@Url.Action("Block")" formmethod="post" class="btn"><img src="~/icons/block.png" /></button>
+                <button type="submit" formaction="@Url.Action("Unblock")" formmethod="post" class="btn"><img src="~/icons/icons8-unlock-security-lock-with-permission-granted-to-access-24.png" /></button>
+                <button type="submit" formaction="@Url.Action("Delete")" formmethod="post" class="btn"><img src="~/icons/icons8-delete-24.png" /></button>
+            </div>
+            <br />
+            <table class="table table-hover table-bordered ">
+                <tbody class="table-responsive ">
+                <tr><th>@Html.CheckBox("CheckAll", false, new { id = "select_all" })</th><th>Id</th><th>Email</th><th>User Name</th><th>Date of registration</th><th>Last Login</th><th>Status</th></tr>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selectedUsers"
+                                   id="@user.Id" value="@user.UserName"
+                                   class="someClass">
+                            @*<input name="selectedUsers" type="hidden" id="@user.Id" value="@user.UserName" class="someClass" />*@
+                        </td>
+                        <td>@user.Id</td>
+                        <td>@user.Email</td>
+                        <td>@user.UserName</td>
+                        <td>@user.RegistrationDateTime</td>
+                        <td>@user.LastLogInTime</td>
+                        <td>@user.Status</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </form>
+}
+<script>
+    $('#select_all').click(function () {
+        $('.someClass').prop('checked', this.checked);
+    });
+</script>

@@ -17,4 +17,14 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\icons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\icons\block.png" />
+    <None Include="wwwroot\icons\icons8-delete-24.png" />
+    <None Include="wwwroot\icons\icons8-unlock-security-lock-with-permission-granted-to-access-24.png" />
+  </ItemGroup>
+
 </Project>

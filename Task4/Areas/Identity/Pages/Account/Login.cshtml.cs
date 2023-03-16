@@ -70,7 +70,7 @@ namespace Task4.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [EmailAddress]
+            [Display(Name = "User name")]
             public string Email { get; set; }
 
             /// <summary>
@@ -120,7 +120,7 @@ namespace Task4.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    user = _context.Users.Where(p => p.Email == Input.Email).FirstOrDefault();
+                    user = _context.Users.Where(p => p.UserName == Input.Email).FirstOrDefault();
                     user.LastLogInTime = DateTime.Now;
                     _logger.LogInformation("User login time" + user.LastLogInTime);
                     _logger.LogInformation("User logged in.");
