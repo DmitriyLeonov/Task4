@@ -27,7 +27,6 @@ namespace Task4.Controllers
         public async Task<ActionResult> DeleteAsync(string[] selectedUsers)
         {
             ApplicationUser currentUser = new ApplicationUser();
-            
             var name = HttpContext.User.Identity.Name;
             List<ApplicationUser> users = new List<ApplicationUser>();
             foreach (string user in selectedUsers)
@@ -46,6 +45,9 @@ namespace Task4.Controllers
                 }
                 else
                 {
+                    user.LockoutEnd = DateTimeOffset.MaxValue;
+                    user.Status = "Deleted";
+                    await _userManager.UpdateSecurityStampAsync(user);
                     redirectUrl = "~/Identity/Account/Login";
                 }
             }
@@ -56,19 +58,33 @@ namespace Task4.Controllers
         [HttpPost]
         public async Task<ActionResult> BlockAsync(string[] selectedUsers)
         {
+            ApplicationUser currentUser = new ApplicationUser();
+            var name = HttpContext.User.Identity.Name;
             List<ApplicationUser> users = new List<ApplicationUser>();
             foreach (string user in selectedUsers)
             {
                 users.Add(_context.Users.Where(u => u.UserName == user).FirstOrDefault());
             }
+            currentUser = _context.Users.Where(u => u.UserName == name).FirstOrDefault();
             foreach (var user in users)
             {
-                user.LockoutEnd = DateTimeOffset.MaxValue;
-                user.Status = "Blocked";
-                await _userManager.UpdateSecurityStampAsync(user);
+                if (user != currentUser)
+                {
+                    user.LockoutEnd = DateTimeOffset.MaxValue;
+                    user.Status = "Blocked";
+                    await _userManager.UpdateSecurityStampAsync(user);
+                    redirectUrl = "~/";
+                }
+                else
+                {
+                    user.LockoutEnd = DateTimeOffset.MaxValue;
+                    user.Status = "Blocked";
+                    await _userManager.UpdateSecurityStampAsync(user);
+                    redirectUrl = "~/Identity/Account/Login";
+                }
             }
             await _context.SaveChangesAsync();
-            return Redirect("~/Identity/Account/Login");
+            return Redirect(redirectUrl);
         }
 
         [HttpPost]

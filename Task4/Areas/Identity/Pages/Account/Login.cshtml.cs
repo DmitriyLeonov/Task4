@@ -71,7 +71,7 @@ namespace Task4.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [Display(Name = "User name")]
-            public string Email { get; set; }
+            public string UserName { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -117,10 +117,10 @@ namespace Task4.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    user = _context.Users.Where(p => p.UserName == Input.Email).FirstOrDefault();
+                    user = _context.Users.Where(p => p.UserName == Input.UserName).FirstOrDefault();
                     user.LastLogInTime = DateTime.Now;
                     _logger.LogInformation("User login time" + user.LastLogInTime);
                     _logger.LogInformation("User logged in.");
